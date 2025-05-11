@@ -1,33 +1,37 @@
-# Mainly for asthethic purpose
-from utils import *
+"""Archivo que maneja la logica del menu"""
+
+# Principalme por decoracion, importa verificaciones
+from utils import printColor, eraseWS
 
 def start():
-    listMenu = ["\t1 => Iniciar Partida",
-                "\t2 => Restablecer Partida",
-                "\t3 => Tutorial",
-                "\t4 => Salir"]
+    """Funcion que maneja las entrada principal del programa,
+    Imprime el menu y tiene el hilo principal[Se repite]
+    """
+    printColor("","bold")
+    printColor("\t1 => Iniciar Partida\n","blue")
+    printColor("\t2 => Restablecer Partida\n","blue")
+    printColor("\t3 => Tutorial\n","green")
+    printColor("\t4 => Salir\n","red")
 
-    option = eraseWS(input("\033[1m\t Escoge una opcion:\t=> "))
-
-    if isNum(option):
-
-        if int(option) == 1:
-            print("Iniciando partida")
-        elif int(option) == 2:
-            print("Cargando Partida")
-        elif int(option) == 3:
-            playTutorial()
-        elif int(option) == 4:
-            print("Gracias por Jugar...")
-            return
-        else:
-            print("Escogiste una opcion no valida")
-
+    option = eraseWS(input("\t Escoge una opcion:\t=> "))
+    
+    if option == "1":
+        print("Iniciando partida")
+    elif option == "2":
+        print("Cargando Partida")
+    elif option == "3":
+        playTutorial()
+    elif option == "4":
+        print("Gracias por Jugar...")
+        return
     else:
-        print("Opcion no valida, digita un numero valido")
-        
+        print("\t\t\tOpcion no valida\n")
+
     start()
 
 
 def playTutorial():
+    """Funcion que imprime el tutorial al usuario,
+    donde se le guia como funciona el juego
+    """
     pass

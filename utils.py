@@ -20,6 +20,8 @@ def isNum(num):
     """
     if not isinstance(num,str):
         return "Error01"
+    if num == "":
+        return False
 
     return isNumAux(num)
 
@@ -103,26 +105,50 @@ def eraseWSAux(text,newText):
 
     return eraseWSAux(text[1:],newText + text[0])
 
-def printColor(text,color):
+def printColor(text,design):
+    """Funcion utiliza para decorar el programa
+       
+        Entradas:
+            text: any
+            design: La seleccion de color | puede ser
+                    pink, blue, cyan, green, yellow,
+                    red o underline, si no se escoge
+                    ningun solo se imprime el text
+        
+        Salidas:
+            None
+        
+        Ejemplos:
+            printColor("hola","pink") -> None
+            stdout: "hola\n" [en rosado]
 
-    # Borrar en produccion
-    def exampleColors():
-        HEADER = '\033[95m'
-        OKBLUE = '\033[94m'
-        OKCYAN = '\033[96m'
-        OKGREEN = '\033[92m'
-        WARNING = '\033[93m'
-        FAIL = '\033[91m'
-        ENDC = '\033[0m'
-        BOLD = '\033[1m'
-        UNDERLINE = '\033[4m'
-        print(f"{HEADER}This is HEADER color{ENDC}")
-        print(f"{OKBLUE}This is OKBLUE color{ENDC}")
-        print(f"{OKCYAN}This is OKCYAN color{ENDC}")
-        print(f"{OKGREEN}This is OKGREEN color{ENDC}")
-        print(f"{WARNING}This is WARNING color{ENDC}")
-        print(f"{FAIL}This is FAIL color{ENDC}")
-        print(f"{BOLD}This is BOLD text{ENDC}")
-        print(f"{UNDERLINE}This is UNDERLINE text{ENDC}")
+        Restricciones:
+            text: None
+            design: None
+    """
 
-    pass
+    if design == "pink":
+        print('\033[95m',text)
+
+    elif design == "blue":
+        print('\033[94m',text)
+
+    elif design == "cyan":
+        print('\033[96m',text)
+
+    elif design == "green":
+        print('\033[92m',text)
+
+    elif design == "yellow":
+        print('\033[93m',text)
+
+    elif design == "red":
+        print('\033[91m',text)
+
+    elif design == "underline":
+        print('\033[4m',text)
+
+    else:
+        print(text)
+
+    print("\033[0;0m\033[1m",end="")
