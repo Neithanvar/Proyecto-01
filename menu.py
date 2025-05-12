@@ -3,6 +3,9 @@
 # Principalme por decoracion, importa verificaciones
 from utils import printColor, eraseWS
 
+# Inicio del juego 
+from game import startGame
+
 def start():
     """Funcion que maneja las entrada principal del programa,
     Imprime el menu y tiene el hilo principal[Se repite]
@@ -16,7 +19,8 @@ def start():
     option = eraseWS(input("\t Escoge una opcion:\t=> "))
     
     if option == "1":
-        print("Iniciando partida")
+        printColor("\t\t ...\t...\t...","yellow")
+        startGame()
     elif option == "2":
         print("Cargando Partida")
     elif option == "3":

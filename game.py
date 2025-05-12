@@ -13,8 +13,8 @@ def startGame():
 
     communitiesSize = eraseWS(input("\t Cuantas comunidades deseas crear?[1,100] \t => "))
 
-    if isNum(communitiesSize) and not generateCommunities(communitiesSize):
-        generateCommunities(communitiesSize)
+    if isNum(communitiesSize) and not generateCommunities(int(communitiesSize)):
+        print("ASd")
         
     else:
         printColor("\t\t\t Escoge entre 1 y 100 comunidades porfavor","cyan")
@@ -90,12 +90,164 @@ def generateRandomValuesAux(size,range,index):
     
     return [randint(range,100)] + generateRandomValuesAux(size,range,index+1)
 
-def playTurn():
+def playTurn(culture,autonomy):
+    """Sigue la mecanica del juego de turnos,
+       le pregunta al usuario cual comunidad 
+       quiere proponer cambios y que tipo
+
+       Entradas:
+            culture:
+            autonomy:
+
+        Salidas:
+            None
+
+        Restricciones:
+            culture:
+            autonomy
     """
-    """
-    culture = generateChanges()
-    autonomy, culture = updateCommunities(autonomy,cultures)
+    if not isinstance(culture,list) or not isinstance(autonomy,list):
+        return "Error01"
     
+    if culture and autonomy:
+
+        printCommunities(culture,autonomy)
+
+        printColor("\t\t 1 - Mejorar Autonomia ", "yellow")
+        printColor("\t\t 2 - Mejorar Acervo Cultural", "yellow")
+        option = eraseWS(input("\t\t Que proyecto quieres realizar: \t => "))
+
+        if option == "1":
+            autonomy = generateChanges(autonomy)
+        elif option == "2":
+            culture = generateChanges(culture)
+        else:
+            printColor("\t\t Haz seleccionado un proyecto invalido ","red")
+
+            
+        # Realizar el cambio de agentes externos
+
+        if option == "1" or option == "2":
+            # Reutilizar la variable para seleccionar
+            # Que evento se dara por los agentes
+            option = randint(1, 2)
+            # Seleccionar comunidad
+            community = randint(1, len(autonomy))
+            debuff = randint(25, 25 + 5 * len(autonomy))
+            if option == 1:
+                if stopsExisting(autonomy,debuff,community):
+                    autonomy = eraseCommunity(autonomy,community)
+                    culture = eraseCommunity(culture,community)
+                else:
+                    autonomy = updateCommunity(autonomy,debuff,community)
+            else:
+                if stopsExisting(culture,debuff,community):
+                    autonomy = eraseCommunity(autonomy,community)
+                    culture = eraseCommunity(culture,community)
+                else:
+                    culture = updateCommunity(culture,debuff,community)
+
+
+        playTurn(culture,autonomy)
+
+
+def printCommunities(culture,autonomy):   
+    """"""
+    for cul in culture:
+        print(cul, " ")
+    for asd in autonomy:
+        print(asd, " ")
+
+def generateChanges(values):
+    """"""
+    if not isinstance(values,list):
+        return "Error01"
+    
+    option = eraseWS(input("\t\t Que comunidad quieres apoyar: \t => "))
+
+    if isNum(option):
+        if int(option) > len(values) or int(option) < 1:
+            printColor("\t\t Debes seleccionar una comunidad valida")
+            return generateChanges(values)
+        
+        return generateChangesAux(values,int(option),0,len(values))
+    
+    printColor("\t\t Debes seleccionar una comunidad valida")
+    return generateChanges(values)
+
+def generateChangesAux(values,community,index,amt):
+    """Funcion auxiliar de generateChanges"""
+    if not values:
+        return []
+    
+    if index == community: 
+        buff = randint(20, 20 + 3 * amt)
+
+        if values[0] + buff > 100:
+            return [100] + values[1:]
+        
+        return [values[0] + buff] + values[1:]
+    
+    return [values[0]] + generateChangesAux(values[1:],community,index+1,amt)
+
+def eraseCommunity(values,community):
+    """"""
+    if not isinstance(values,list):
+        return "Error01"
+    if not isinstance(community,int):
+        return "Error02"
+    
+    return eraseCommunityAux(values,community,1)
+
+def eraseCommunityAux(values,community,index):
+    """Funcion auxiliar de eraseCommunity"""
+    if not values:
+        return []
+    if index == community:
+        return values[1:]
+    return [values[0]] + eraseCommunityAux(values[1:],community,index+1)
+    
+def updateCommunity(values,debuff,community):
+    """"""
+    if not isinstance(values,list):
+        return "Error01"
+    if not isinstance(debuff,int):
+        return "Error02"
+    if not isinstance(community,int):
+        return "Error03"
+    
+    return updateCommunityAux(values,debuff,community,1)
+
+def updateCommunityAux(values,debuff,community,index):
+    """Funcion auxiliar de updateCommunity"""
+    if not values:
+        return []
+    if community == index:
+        return [values[0] - debuff] + values[1:]
+    
+    return [values[0]] + updateCommunityAux(values[1:],debuff,community,index+1)
+
+def stopsExisting(values,debuff,community):
+    """"""
+    if not isinstance(values,list):
+        return "Error01"
+    if not isinstance(debuff,int):
+        return "Error02"
+    if not isinstance(community,int):
+        return "Error03"
+    
+    return stopsExistingAux(values,debuff,community,1)
+
+def stopsExistingAux(values,debuff,community,index):
+    """Funcion auxiliar de stopsExisting"""
+    if not values:
+        return False
+    if community == index:
+        if values[0] - debuff < 1:
+            return True
+        return False
+        
+    return stopsExistingAux(values[1:],debuff,community,index+1)
 
 
 """
