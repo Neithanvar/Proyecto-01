@@ -152,3 +152,50 @@ def printColor(text,design):
         print(text)
 
     print("\033[0;0m\033[1m",end="")
+
+# Grupo de funciones auxiliares 
+# para imprimir una caja.......
+
+def printTop():
+    """
+        Imprime la parte superior 
+        de un recuadro
+    """
+    print('\t_| |','_' * 61,'| |_',sep='')
+    print('\t_   ','_' * 61,'   _',sep='')
+
+def printMiddle(autonomy,culture):
+    """
+        Imprime la parte del centro
+        de un recuadro
+
+        Entradas:
+            autonomy: La lista de autonomia
+                      que se imprimira adentro
+            culture: La lista de acervo que
+                     se imprimira adentro
+
+        Salidas: 
+            None
+
+        Restricciones:
+            autonomy: Debe ser lista
+            culture: Debe ser lista
+                     Ambas del mismo len
+
+    """
+    printMiddleAux(autonomy,culture,1)
+
+def printMiddleAux(autonomy,culture,index):
+    """
+    """
+    if autonomy:
+        print('\t | |','\tComunidad #',index,':\t Autonomia: ',autonomy[0],'\t Aciervo Cultural: ',culture[0],'\t | |',sep='')
+        printMiddleAux(autonomy[1:],culture[1:],index+1)
+
+def printBottom():
+    """
+    """
+    print('\t_| |','_'*61,'| |_',sep='')
+    print('\t_   ','_'*61,'   _',sep='')
+    print('\t | |', ' ' * 61,'| | ',sep='')

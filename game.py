@@ -4,17 +4,17 @@
 
 # Manejar los numeros aleatorios
 from random import randint
-
+from save import saveGame
 # Para verificaciones y decoracion
 from utils import *
 
 def startGame():
     """Inicializa el juego, creando comunidades"""
 
-    communitiesSize = eraseWS(input("\t Cuantas comunidades deseas crear?[1,100] \t => "))
+    communitiesSize = eraseWS(input("\t Cuantas comunidades deseas crear? [1,100]\t => "))
 
     if isNum(communitiesSize) and not generateCommunities(int(communitiesSize)):
-        print("ASd")
+        printColor("\t\t\tGracias por jugar","underline")
         
     else:
         printColor("\t\t\t Escoge entre 1 y 100 comunidades porfavor","cyan")
@@ -90,14 +90,18 @@ def generateRandomValuesAux(size,range,index):
     
     return [randint(range,100)] + generateRandomValuesAux(size,range,index+1)
 
-def playTurn(culture,autonomy):
+def playTurn(autonomy,culture):
     """Sigue la mecanica del juego de turnos,
        le pregunta al usuario cual comunidad 
        quiere proponer cambios y que tipo
 
        Entradas:
-            culture:
-            autonomy:
+            culture: La lista con los valores
+                     de acervo cultural de las
+                     comunidades
+            autonomy: La lista con los valores
+                      de autonomia de las 
+                      comunidades
 
         Salidas:
             None
@@ -109,13 +113,20 @@ def playTurn(culture,autonomy):
     if not isinstance(culture,list) or not isinstance(autonomy,list):
         return "Error01"
     
+    playTurnAux(autonomy,culture)
+
+def playTurnAux(autonomy,culture):
+    """Funcion auxiliar de playTurn"""
     if culture and autonomy:
 
-        printCommunities(culture,autonomy)
+        saveGame(autonomy,culture)
+
+        printCommunities(autonomy,culture)
 
         printColor("\t\t 1 - Mejorar Autonomia ", "yellow")
         printColor("\t\t 2 - Mejorar Acervo Cultural", "yellow")
-        option = eraseWS(input("\t\t Que proyecto quieres realizar: \t => "))
+
+        option = eraseWS(input("\t\t Que proyecto quieres realizar:  => "))
 
         if option == "1":
             autonomy = generateChanges(autonomy)
@@ -124,39 +135,55 @@ def playTurn(culture,autonomy):
         else:
             printColor("\t\t Haz seleccionado un proyecto invalido ","red")
 
-            
+        
+        printCommunities(autonomy,culture)
+
         # Realizar el cambio de agentes externos
 
         if option == "1" or option == "2":
+
             # Reutilizar la variable para seleccionar
             # Que evento se dara por los agentes
             option = randint(1, 2)
-            # Seleccionar comunidad
+
+            # Seleccionar comunidad a atacar
             community = randint(1, len(autonomy))
             debuff = randint(25, 25 + 5 * len(autonomy))
+
             if option == 1:
+
+                printColor("\t\t Una minera ha atacado a la comunidad #"+str(community),"red")
+                printColor("\t\t Reduciendo su autonomia por " +str(debuff),"red")
+
+
                 if stopsExisting(autonomy,debuff,community):
+
+                    printColor("\t\t La comunidad #"+str(community) + " ha dejado de existir","red")
                     autonomy = eraseCommunity(autonomy,community)
                     culture = eraseCommunity(culture,community)
                 else:
                     autonomy = updateCommunity(autonomy,debuff,community)
             else:
+                
+                printColor("\t\t Unos misioneros han atacado a la comunidad #"+str(community),"red")
+                printColor("\t\t Reduciendo su acervo Cultural por "+str(debuff),"red")
+
                 if stopsExisting(culture,debuff,community):
+
+                    printColor("\t\t La comunidad #"+str(community) + " ha dejado de existir","red")
                     autonomy = eraseCommunity(autonomy,community)
                     culture = eraseCommunity(culture,community)
                 else:
                     culture = updateCommunity(culture,debuff,community)
 
 
-        playTurn(culture,autonomy)
+        playTurnAux(autonomy,culture)
 
-
-def printCommunities(culture,autonomy):   
+def printCommunities(autonomy,culture):   
     """"""
-    for cul in culture:
-        print(cul, " ")
-    for asd in autonomy:
-        print(asd, " ")
+    printTop()
+    printMiddle(autonomy,culture)
+    printBottom()
 
 def generateChanges(values):
     """"""
@@ -167,12 +194,12 @@ def generateChanges(values):
 
     if isNum(option):
         if int(option) > len(values) or int(option) < 1:
-            printColor("\t\t Debes seleccionar una comunidad valida")
+            printColor("\t\t Debes seleccionar una comunidad valida","red")
             return generateChanges(values)
         
-        return generateChangesAux(values,int(option),0,len(values))
+        return generateChangesAux(values,int(option),1,len(values))
     
-    printColor("\t\t Debes seleccionar una comunidad valida")
+    printColor("\t\t Debes seleccionar una comunidad valida","red")
     return generateChanges(values)
 
 def generateChangesAux(values,community,index,amt):
@@ -181,7 +208,10 @@ def generateChangesAux(values,community,index,amt):
         return []
     
     if index == community: 
+
         buff = randint(20, 20 + 3 * amt)
+        printColor("\n\t\t Haz apoyado a la comunidad con " +str(buff) + " puntos\n","cyan")
+
 
         if values[0] + buff > 100:
             return [100] + values[1:]
