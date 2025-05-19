@@ -1,4 +1,6 @@
 # Main file !!
+# Para ejecutar el juego
+# python ./main.py
 
 from menu import start
 

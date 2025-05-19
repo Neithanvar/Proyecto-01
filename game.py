@@ -5,6 +5,7 @@
 # Manejar los numeros aleatorios
 from random import randint
 from save import saveGame
+
 # Para verificaciones y decoracion
 from utils import *
 
@@ -40,11 +41,10 @@ def generateCommunities(num):
 
         Restricciones:
             num: debe ser un entero, entre 1 y 100
-        
     """
     if not isinstance(num,int):
         return "Error01"
-    if num < 0 or num > 100:
+    if num < 1 or num > 100:
         return "Error02"
     
     autonomy = generateRandomValues(num,20)
@@ -61,7 +61,7 @@ def generateRandomValues(size,range):
             size: La cantidad de comunidades que
                   vaya a tener el juego
             range: El valor minimo con el que van
-                   a generrse los valores[enteros]
+                   a generarse los valores[enteros]
        
        Salidas:
             List: La lista con los valores generados
@@ -135,9 +135,6 @@ def playTurnAux(autonomy,culture):
         else:
             printColor("\t\t Haz seleccionado un proyecto invalido ","red")
 
-        
-        printCommunities(autonomy,culture)
-
         # Realizar el cambio de agentes externos
 
         if option == "1" or option == "2":
@@ -149,6 +146,8 @@ def playTurnAux(autonomy,culture):
             # Seleccionar comunidad a atacar
             community = randint(1, len(autonomy))
             debuff = randint(25, 25 + 5 * len(autonomy))
+
+            printCommunities(autonomy,culture)
 
             if option == 1:
 
@@ -175,18 +174,60 @@ def playTurnAux(autonomy,culture):
                     culture = eraseCommunity(culture,community)
                 else:
                     culture = updateCommunity(culture,debuff,community)
+    
 
 
         playTurnAux(autonomy,culture)
 
 def printCommunities(autonomy,culture):   
-    """"""
+    """
+        Funcion que imprime la informacion
+        de las comunidades de una manera 
+        visualmente placentera
+
+        Entradas:
+            autonomy: lista de autonomia
+            culture: lista de acervo
+        
+        Salidas:
+            None
+        
+        Ejemplos:
+
+        printCommunites([66,40],[45,44]) ->
+               _| |_____________________________________________________________| |_
+               _   _____________________________________________________________   _
+                | |    Comunidad #1:    Autonomia: 66   Aciervo Cultural: 45    | |
+                | |    Comunidad #2:    Autonomia: 40   Aciervo Cultural: 44    | |
+               _| |_____________________________________________________________| |_
+               _   _____________________________________________________________   _
+                | |                                                             | | 
+        
+        printCommunites([20],[11]) ->
+               _| |_____________________________________________________________| |_
+               _   _____________________________________________________________   _
+                | |    Comunidad #1:    Autonomia: 20   Aciervo Cultural: 11    | |
+               _| |_____________________________________________________________| |_
+               _   _____________________________________________________________   _
+                | |                                                             | | 
+
+        Restricciones:
+            autonomy: Debe ser una lista de numeros
+            culture: Debe ser una lista de numeros
+                     Deben ser del mismo len
+    """
+
     printTop()
     printMiddle(autonomy,culture)
     printBottom()
 
 def generateChanges(values):
-    """"""
+    """
+        Funcion que maneja la logica
+        para ser la asamblea
+        Significa: donde se pide
+        que comunidad beneficiar
+    """
     if not isinstance(values,list):
         return "Error01"
     
@@ -221,12 +262,39 @@ def generateChangesAux(values,community,index,amt):
     return [values[0]] + generateChangesAux(values[1:],community,index+1,amt)
 
 def eraseCommunity(values,community):
-    """"""
+    """
+        Funcion que elimina una comunidad
+        de la lista [ya sea de autonomia
+        o de culture]
+
+        Entradas:
+            values: La lista con los valores
+                    de las comunidades
+            community: Entero con la comunidad
+                       a eliminar
+
+        Salidas:
+            list: values sin la comunidad escogida
+
+        Ejemplos:
+            eraseCommunity([1,5,10],2) ->
+                [1,10]
+            eraseCommunity([70,59,33],1) ->
+                [59,33]
+
+        Restricciones:
+            values: Debe ser una lista de
+                    enteros
+            community: Debe ser un entero
+                       dentro del rango de la lista
+    """
     if not isinstance(values,list):
         return "Error01"
     if not isinstance(community,int):
         return "Error02"
-    
+    if community > len(values):
+        return "Error03"
+
     return eraseCommunityAux(values,community,1)
 
 def eraseCommunityAux(values,community,index):
@@ -238,13 +306,41 @@ def eraseCommunityAux(values,community,index):
     return [values[0]] + eraseCommunityAux(values[1:],community,index+1)
     
 def updateCommunity(values,debuff,community):
-    """"""
+    """
+        Funcion que cambia un valor en
+        un arreglo, en un indice especifico
+
+        Entradas:
+            values: La lista con los valores
+                    de la comunidad
+            debuff: Entero con el valor a restar
+            community: Entero con la comunidad
+                       a restar
+
+        Salidas:
+            lista: la lista modificada
+
+        Ejemplos:
+            updateCommunity([20,30,40],5,2) ->
+                [20,25,40]
+            updateCommunity([10,9,8],1,1) ->
+                [9,9,8]
+
+        Restricciones:
+            values: Debe ser una lista
+                    con valores numericos
+            debuff: Debe ser un entero positivo
+            community: Debe ser un entero dentro
+                       del rango de la lista
+    """
     if not isinstance(values,list):
         return "Error01"
     if not isinstance(debuff,int):
         return "Error02"
     if not isinstance(community,int):
         return "Error03"
+    if community > len(values):
+        return "Error04"
     
     return updateCommunityAux(values,debuff,community,1)
 
@@ -258,13 +354,41 @@ def updateCommunityAux(values,debuff,community,index):
     return [values[0]] + updateCommunityAux(values[1:],debuff,community,index+1)
 
 def stopsExisting(values,debuff,community):
-    """"""
+    """
+        Comprueba si una comunidad deja de existir
+
+        Entradas:
+            values: La lista de valores
+            debuff: Entero a restar a una
+                    comunidad
+            community: El indice de la comunidad
+                       a restar el valor
+
+        Salidas:
+            bool: True si la comunidad deja de
+                  existir, False si no
+
+        Ejemplos:
+            stopsExisting([10,20,30],35,3) ->
+                True
+            stopsExisting([60,70,80],20,1) ->
+                False
+
+        Restricciones:
+            values: Debe ser una lista de valores
+            debuff: Debe ser un entero positivo
+            community: Debe ser un entero dentro
+                       del rango de la lista
+
+    """
     if not isinstance(values,list):
         return "Error01"
     if not isinstance(debuff,int):
         return "Error02"
     if not isinstance(community,int):
         return "Error03"
+    if community > len(values):
+        return "Error04"
     
     return stopsExistingAux(values,debuff,community,1)
 
@@ -279,31 +403,3 @@ def stopsExistingAux(values,debuff,community,index):
         
     return stopsExistingAux(values[1:],debuff,community,index+1)
 
-
-"""
--> Implementar, validar y documentar programas
-
-Cantidad de comunidades: debe decidir la cantidad de comunidades con las que estarán trabajando este 
-debe  ser un número variable que  se  solicita  al usuario del  programa 
-
--Comunidad: Cada  comunidad tendrá  dos  
-valores relacionados con el trabajo del consejo, a saber:  autonomía y de acervo cultural
-de forma aleatoria en rangos definidos por ustedes.
-    -Durante la ejecución del programa estos valores(AMBOS) se deben mantener por encima de 0 ya que si alguno de 
-los dos valores llega a cero  la comunidad se disuelve
-
--Turnos
-EN CADA TURNO 
-UN POSITIVO: 
-El   consejo   ejecutará   un   proyecto   en   una   comunidad   que   el   usuario   del   programa   debe 
-seleccionar. Cada proyecto estará dirigido a aumentar la autonomía o el acervo cultural de la  
-comunidad: el número preciso será seleccionado de forma aleatoria 
-EN NEGATIVO:
-Agentes externos a las comunidades misioneros o compañías mineras se acercarán a estas y  
-realizarán   acciones   que   reducen   su   autonomía   (las   mineras)   o   su   acervo   cultural   (los 
-misioneros).   el valor de impacto en el rubro de la comunidad será seleccionado de forma 
-aleatoria 
-
-Adicionalmente,   si   todas   las   comunidades   a   cargo   de   un   consejo   se   disuelven.   Se   considera   que   el  
-consejo falló en su labor y el programa se cierra. <- acaba ddel juego
-"""

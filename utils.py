@@ -2,7 +2,8 @@
    imprimir en color{""} o verificar"""
 
 def isNum(num):
-    """Comprueba que todos los caracteres de un string sean numericos
+    """Comprueba que todos los caracteres 
+       de un string sean numericos
     
         Entradas:
             num: El string a verificar
@@ -61,7 +62,7 @@ def isValidDigit(digit):
     if len(digit) > 1:
         return "Error02"
     
-    return isValidDigitAux(digit,['1','2','3','4','5','6','7','8','9'])
+    return isValidDigitAux(digit,['0','1','2','3','4','5','6','7','8','9'])
 
 
 def isValidDigitAux(digit,allDigits):
@@ -88,10 +89,13 @@ def eraseWS(texto):
             eraseWS("  test  ") -> "test"
 
         Restricciones:
-            texto: Debe ser un string
+            texto: Debe ser un string,
+                   no mayor a 900 chars
     """
     if not isinstance(texto,str):
         return "Error01"
+    if len(texto) > 900:
+        return "Error02"
 
     return eraseWSAux(texto,"")
 
@@ -184,17 +188,25 @@ def printMiddle(autonomy,culture):
                      Ambas del mismo len
 
     """
+    if not isinstance(autonomy,list):
+        return "Error01"
+    if not isinstance(culture,list):
+        return "Error02"
+    if not len(autonomy) == len(culture):
+        return "Error03"
+    
     printMiddleAux(autonomy,culture,1)
 
 def printMiddleAux(autonomy,culture,index):
-    """
-    """
+    """Funcion auxiliar de printMiddle"""
     if autonomy:
         print('\t | |','\tComunidad #',index,':\t Autonomia: ',autonomy[0],'\t Aciervo Cultural: ',culture[0],'\t | |',sep='')
         printMiddleAux(autonomy[1:],culture[1:],index+1)
 
 def printBottom():
     """
+        Imprime la parte inferior 
+        de un recuadro
     """
     print('\t_| |','_'*61,'| |_',sep='')
     print('\t_   ','_'*61,'   _',sep='')

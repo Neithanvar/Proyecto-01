@@ -10,9 +10,11 @@ from game import startGame, printCommunities
 from load import loadGame
 
 def start():
-    """Funcion que maneja las entrada principal del programa,
-    Imprime el menu y tiene el hilo principal[Se repite]
     """
+        Funcion que maneja las entrada principal del programa,
+        Imprime el menu y tiene el hilo principal[Se repite]
+    """
+
     printColor("","bold")
     printColor("\t1 => Iniciar Partida\n","blue")
     printColor("\t2 => Restablecer Partida\n","blue")
@@ -39,12 +41,13 @@ def start():
 
 
 def playTutorial():
-    """Funcion que imprime el tutorial al usuario,
-    donde se le guia como funciona el juego
+    """
+        Funcion que imprime el tutorial al usuario,
+        donde se le guia como funciona el juego
     """
 
     printColor("\t\t Eres una asamblea la cual \n\t\t" \
-               " tienes que responsabilisarte por las comunidades","yellow")
+               " tienes que responsabilizarte por las comunidades","yellow")
     
     time.sleep(3)
     printColor("\t\t Tu mision va a ser -> mantener el bienestar \n\t\t" \
@@ -65,10 +68,12 @@ def playTutorial():
     printColor("\t\t Solo tienes que escoger una comunidad valida","yellow")
 
     time.sleep(3)
-    printColor("\t\t Ten en cuenta que cada vez que apoyes a" \
+    printColor("\t\t Ten en cuenta que cada vez que apoyes a " \
     "una comunidad, un agente externo atacara otra", "red")
 
     time.sleep(3)
     printColor("\t\t Buena suerte y manten a todos vivos! ","yellow")
+    
+    time.sleep(2)
 
 
